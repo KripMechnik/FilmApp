@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:paddingStart="8dp"
+              android:paddingTop="8dp"
+              android:paddingEnd="8dp"
+              android:orientation="vertical">
+
+    <TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+                android:layout_height="160dp"
+                android:layout_width="112dp"
+                android:layout_gravity="center"
+                app:shapeAppearanceOverlay="@style/RoundedImageView"
+                android:src="@android:color/holo_blue_dark"
+                android:id="@+id/iv_preview"
+        />
+
+
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="8dp"
+            >
+
+                <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/tv_title"
+                        android:textSize="24sp"
+                        android:fontFamily="sans-serif-smallcaps"
+                        tools:text="Название фильма"
+                />
+
+                <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/tv_year"
+                        android:textSize="18sp"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:layout_marginTop="8dp"
+                        tools:text="Год: 2024"
+                />
+
+                <RatingBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:isIndicator="true"
+                        android:id="@+id/rating_bar"
+                        android:rating="3.5"
+                        android:stepSize="0.2"
+                        android:progressBackgroundTint="@android:color/background_dark"
+                        android:progressTint="@android:color/holo_orange_light"
+                        android:scaleX="0.5"
+                        android:scaleY="0.5"
+                        android:transformPivotX="0dp"
+                        android:transformPivotY="8dp"
+                />
+            </LinearLayout>
+
+    </TableRow>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@color/cardview_dark_background"
+            android:layout_height="2dp"/>
+
+</LinearLayout>
