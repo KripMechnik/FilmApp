@@ -30,7 +30,6 @@ class ListViewModel @Inject constructor(
 
     init {
         getFilms()
-        //Log.i("RRR", state.value?.films?.size.toString())
     }
 
     private fun getFilms() {
@@ -38,13 +37,11 @@ class ListViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     state.value = FilmListState(films = result.data ?: emptyList())
-                    //Log.i("RRR", state.value?.films?.size.toString())
                 }
                 is Resource.Error -> {
                     state.value = FilmListState(
                         error = result.message ?: "An unexpected error occured"
                     )
-                    Log.e("RRR", state.value?.error ?: "")
                 }
                 is Resource.Loading -> {
                     state.value = FilmListState(isLoading = true)

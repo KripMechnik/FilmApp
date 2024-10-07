@@ -41,7 +41,6 @@ class FilmListAdapter(
             binding.tvTitle.text = title
             binding.tvYear.text = year.toString()
             binding.ratingBar.rating = (rating/2).toFloat()
-            Log.i("RATING", (rating/2).toFloat().toString())
             Glide.with(binding.ivPreview).load(url).error(Color.Gray).apply(RequestOptions().centerCrop()).into(binding.ivPreview)
         }
 

@@ -21,18 +21,15 @@ class DetailViewModel @Inject constructor(
     val id = MutableLiveData("")
 
     fun getFilm() {
-        Log.i("RRR", id.value ?: "")
         getFilmDetailUseCase(id.value ?: "").onEach { result ->
             when (result) {
                 is Resource.Success -> {
                     state.value = FilmDetailState(film = result.data)
-                    result.data?.title?.let { Log.i("RRR", it) }
                 }
                 is Resource.Error -> {
                     state.value = FilmDetailState(
                         error = result.message ?: "An unexpected error occured"
                     )
-                    result.message?.let { Log.i("RRR", it) }
                 }
                 is Resource.Loading -> {
                     state.value = FilmDetailState(isLoading = true)

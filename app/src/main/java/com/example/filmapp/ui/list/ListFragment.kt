@@ -47,7 +47,6 @@ class ListFragment : Fragment() {
             val adapter = FilmListAdapter(it.films, detailViewModel, requireActivity())
 
             recycler.adapter = adapter
-            Log.i("RRR", it.films.size.toString() + " ;;;")
             adapter.notifyDataSetChanged()
 
         })

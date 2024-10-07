@@ -1,7 +1,5 @@
 package com.example.filmapp.data.repository
 
-import android.util.Log
-import com.example.filmapp.common.Constants
 import com.example.filmapp.data.remote.KinopoiskApi
 import com.example.filmapp.data.remote.dto.FilmDetailDto
 import com.example.filmapp.data.remote.dto.FilmList
