@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:shapeAppearanceOverlay="@style/RoundedImageView"
+            android:src="@drawable/user_icon"
+            android:background="#33FFFFFF"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/randomlogin"
+            android:layout_marginStart="16dp"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-smallcaps"
+            />
+
+        <ImageButton
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:id="@+id/button_add"
+            android:src="@drawable/add_icon"
+            android:background="@android:color/transparent"
+            />
+
+        <ImageButton
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:id="@+id/button_reject"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/reject_icon"
+            android:background="@android:color/transparent"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginTop="16dp"
+        android:background="@color/cardview_dark_background"
+        android:layout_height="2dp"/>
+
+</LinearLayout>

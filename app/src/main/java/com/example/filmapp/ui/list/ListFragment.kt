@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +16,10 @@ import com.example.filmapp.R
 import com.example.filmapp.databinding.FragmentListBinding
 import com.example.filmapp.ui.detailed.DetailViewModel
 import com.example.filmapp.ui.list.adapter.FilmListAdapter
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.search.SearchBar
+
+
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,6 +29,8 @@ class ListFragment : Fragment() {
     private lateinit var viewModel: ListViewModel
     private lateinit var detailViewModel: DetailViewModel
     private lateinit var recycler: RecyclerView
+    private lateinit var profileButton: ShapeableImageView
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +47,18 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recycler = binding.filmsRecycler
+
+        searchView = binding.searchView
+        searchView.apply {
+            setIconifiedByDefault(false)
+            queryHint = getString(R.string.search)
+        }
+
+        profileButton = binding.profileButton
+
+        profileButton.setOnClickListener {
+            
+        }
 
         viewModel.state.observe(viewLifecycleOwner, Observer {
             if(it.error.isNotEmpty()){

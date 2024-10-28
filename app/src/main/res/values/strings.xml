@@ -7,4 +7,15 @@
         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised
         in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
         Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="friends">Друзья</string>
+    <string name="search">Поиск...</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="registration">Регистрация</string>
+    <string name="to_register">Зарегистрироваться</string>
+    <string name="waiting_answer">Ожидают ответа</string>
+    <string name="randomlogin">RandomLogin</string>
+    <string name="enter">Вход</string>
+    <string name="to_enter">Войти в аккаунт</string>
 </resources>
