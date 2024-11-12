@@ -120,15 +120,28 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:src="@drawable/play_icon"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:maxImageSize="40dp"
-            android:backgroundTint="@android:color/holo_orange_dark"
+            android:backgroundTint="@android:color/holo_blue_bright"
             app:borderWidth="0dp"
             app:layout_anchor="@id/app_bar_layout"
             android:layout_marginEnd="30dp"
             app:layout_anchorGravity="bottom|right"
+            android:id="@+id/send_button"
             app:fabSize="mini"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:src="@drawable/play_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:maxImageSize="40dp"
+        android:backgroundTint="@android:color/holo_orange_dark"
+        app:borderWidth="0dp"
+        android:id="@+id/watch_button"
+        app:layout_anchor="@id/app_bar_layout"
+        android:layout_marginEnd="110dp"
+        app:layout_anchorGravity="bottom|right"
+        app:fabSize="mini"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

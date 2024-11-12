@@ -19,6 +19,7 @@
             app:shapeAppearanceOverlay="@style/RoundedImageView"
             android:src="@drawable/user_icon"
             android:background="#33FFFFFF"
+            android:id="@+id/photo"
             />
 
         <com.google.android.material.textview.MaterialTextView
@@ -29,6 +30,7 @@
             android:layout_marginStart="16dp"
             android:textSize="24sp"
             android:fontFamily="sans-serif-smallcaps"
+            android:id="@+id/login"
             />
 
         <ImageButton

@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.filmapp.R
 import com.example.filmapp.databinding.FragmentDetailBinding
+import com.example.filmapp.ui.detailed.bottom_sheet_dialog.FriendsSheetDialog
 import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,6 +26,7 @@ class DetailFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding
     private lateinit var toolbar: MaterialToolbar
     private lateinit var viewModel: DetailViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,13 +50,22 @@ class DetailFragment : Fragment() {
             (requireActivity() as AppCompatActivity).supportFragmentManager.popBackStack()
         }
 
-        viewModel.state.observe(viewLifecycleOwner, Observer {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.tvShortDesc.text = it.film?.shortDescription ?: ""
             binding.tvDescription.text = it.film?.description ?: ""
             binding.ratingBar.rating = (it.film?.rating?.div(2) ?: 0.0).toFloat()
             binding.toolbar.title = it.film?.title ?: ""
-            Glide.with(binding.ivPoster).load(it.film?.posterUrl).error(Color.Gray).apply(RequestOptions().centerCrop()).into(binding.ivPoster)
-        })
+            Glide.with(binding.ivPoster).load(it.film?.posterUrl).error(Color.Gray)
+                .apply(RequestOptions().centerCrop()).into(binding.ivPoster)
+        }
+
+        binding.sendButton.setOnClickListener {
+            val fragment = FriendsSheetDialog()
+            val bundle = Bundle()
+            bundle.putString("id", viewModel.id.value)
+            fragment.arguments = bundle
+            fragment.show(parentFragmentManager, null)
+        }
 
     }
 

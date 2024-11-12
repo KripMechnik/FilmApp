@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.FilmApp" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">#ff141218</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
 
     </style>
 

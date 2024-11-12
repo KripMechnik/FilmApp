@@ -4,6 +4,7 @@ import com.example.filmapp.common.Constants
 import com.example.filmapp.data.remote.KinopoiskApi
 import com.example.filmapp.data.repository.FilmRepositoryImpl
 import com.example.filmapp.domain.repository.FilmRepository
+import com.example.filmapp.ui.firebase.GoogleFirebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +29,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFimlRepository(api: KinopoiskApi): FilmRepository{
+    fun provideFilmRepository(api: KinopoiskApi): FilmRepository{
         return FilmRepositoryImpl(api)
+    }
+    @Provides
+    @Singleton
+    fun provideGoogleFirebaseObj(): GoogleFirebase{
+        return GoogleFirebase()
     }
 }

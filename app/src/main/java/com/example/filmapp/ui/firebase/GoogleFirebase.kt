@@ -1,24 +1,26 @@
 package com.example.filmapp.ui.firebase
 
+import com.example.filmapp.ui.common.UserState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class GoogleFirebase(
-    private val coroutineScope: CoroutineScope
-) {
+class GoogleFirebase {
     private val auth = Firebase.auth
     private val db = Firebase.firestore
 
-    fun register(user: UserData){
-        coroutineScope.launch(Dispatchers.IO) {
-            try {
+    fun checkAuth(): Boolean{
+        return auth.currentUser?.let {
+            true
+        } ?: run {
+            false
+        }
+    }
+
+    suspend fun register(user: UserData): Boolean {
+            return try {
                 auth.createUserWithEmailAndPassword(user.email, user.password).await()
                 val uid = auth.currentUser?.uid
                 val userHashMap = hashMapOf(
@@ -26,178 +28,230 @@ class GoogleFirebase(
                     "username" to user.username,
                     "photoUrl" to user.photoUrl
                 )
-                db.collection("users").document(uid!!).set(userHashMap).await()
+                uid?.let {
+                    db.collection("users").document(it).set(userHashMap).await()
+                }
+
+                true
             } catch (e: Exception){
                 if (e is CancellationException) throw e
                 e.printStackTrace()
+                false
             }
-
-        }
-
-
-
     }
 
-    fun signIn(user: UserData){
-        coroutineScope.launch(Dispatchers.IO) {
-            try {
-                auth.signInWithEmailAndPassword(user.email, user.password).await()
-            } catch (e: Exception){
-                if (e is CancellationException) throw e
-                e.printStackTrace()
-            }
+    suspend fun signIn(email: String, password: String): Result<Boolean>{
+        return try {
+            auth.signInWithEmailAndPassword(email, password).await()
+            Result.success(true)
+        } catch (e: Exception){
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+            Result.failure(e)
         }
-
     }
 
     fun signOut() {
-        coroutineScope.launch(Dispatchers.IO) {
-            try {
-                auth.signOut()
-            } catch (e: Exception){
-                if (e is CancellationException) throw e
-                e.printStackTrace()
-            }
+        try {
+            auth.signOut()
+        } catch (e: Exception){
+            if (e is CancellationException) throw e
+            e.printStackTrace()
         }
     }
 
-    fun sendFriendInvite(uidSecond: String){
-
-        coroutineScope.launch(Dispatchers.IO){
-            try{
-                val checkIfExists = db.collection("friends")
-                    .whereEqualTo("uidFirst", auth.currentUser?.uid)
-                    .whereEqualTo("uidSecond", uidSecond)
-                    .get()
-                    .await()
-                if (checkIfExists.isEmpty){
-                    val newFriendRecord = hashMapOf(
-                        "uidFirst" to auth.currentUser?.uid,
-                        "uidSecond" to uidSecond,
-                        "accepted" to 0
-                    )
-                    db.collection("friends").add(newFriendRecord).await()
-                } else {
-                    println("Запись уже существует")
-                }
-            } catch (e: Exception){
-                if (e is CancellationException) throw e
-                e.printStackTrace()
-            }
-
-
-        }
-
-    }
-
-    fun getAllUsers() : List<Map<String, Any>>{
-
-        val res = mutableListOf<Map<String, Any>>()
-        coroutineScope.launch(Dispatchers.IO) {
-            try {
-                val users = db.collection("users")
-                    .get()
-                    .await()
-                for (user in users){
-                    res.add(user.data)
-                }
-            } catch (e: Exception){
-                if (e is CancellationException) throw e
-                e.printStackTrace()
-            }
-        }
-        return res
-    }
-
-    private fun getUser(uid: String) : Map<String, Any>{
-        var data: Map<String, Any> = hashMapOf()
-
-        coroutineScope.launch(Dispatchers.IO){
-            try {
-                val user = db.collection("users")
-                    .document(uid)
-                    .get()
-                    .await()
-                data = user.data!!
-            } catch (e: Exception){
-                if (e is CancellationException) throw e
-                e.printStackTrace()
-            }
-        }
-        return data
-    }
-
-    fun getFriends(): List<Map<String, Any>> {
-        val res = mutableListOf<Map<String, Any>>()
-
-        coroutineScope.launch(Dispatchers.IO){
-            try {
-                val queryFirst = db.collection("friends")
-                    .whereEqualTo("uidFirst", auth.currentUser?.uid)
-                    .get()
-                    .await()
-
-                val querySecond = db.collection("friends")
-                    .whereEqualTo("uidSecond", auth.currentUser?.uid)
-                    .get()
-                    .await()
-                val combinedResults = mutableListOf<DocumentSnapshot>()
-
-                for (document in queryFirst) {
-                    combinedResults.add(document)
-                }
-
-                for (document in querySecond) {
-                    if (!combinedResults.contains(document)) {
-                        combinedResults.add(document)
-                    }
-                }
-
-                for (doc in combinedResults) {
-                    res.add(getUser(doc.data!!["uid"].toString()))
-                }
-            } catch (e: Exception){
-                if (e is CancellationException) throw e
-                e.printStackTrace()
-            }
-
-        }
-        return res
-    }
-
-    fun getFriendInvites(): MutableList<Map<String, Any>> {
-        val res = mutableListOf<Map<String, Any>>()
-        coroutineScope.launch(Dispatchers.IO){
-            try {
-                val friendInvites =  db.collection("friends")
-                    .whereEqualTo("secondUid", auth.currentUser?.uid)
-                    .whereEqualTo("accepted", 0)
-                    .get()
-                    .await()
-                for (friend in friendInvites){
-                    res.add(friend.data)
-                }
-            } catch (e: Exception){
-                if (e is CancellationException) throw e
-                e.printStackTrace()
-            }
-        }
-        return res
-    }
-
-    fun acceptInvite(uid: String){
-
-        coroutineScope.launch(Dispatchers.IO){
-            val friendInvite = db.collection("friends")
-                .whereEqualTo("firstUid", uid)
-                .whereEqualTo("secondUid", auth.currentUser?.uid)
+    suspend fun sendFriendInvite(uidSecond: String){
+        try{
+            val checkIfExistsFirst = db.collection("friends")
+                .whereEqualTo("uidFirst", auth.currentUser?.uid)
+                .whereEqualTo("uidSecond", uidSecond)
                 .get()
                 .await()
-            for (document in friendInvite){
-                db.collection("friends").document(document.id)
-                    .update("accepted", 1)
+            val checkIfExistsSecond = db.collection("friends")
+                .whereEqualTo("uidSecond", auth.currentUser?.uid)
+                .whereEqualTo("uidFirst", uidSecond)
+                .get()
+                .await()
+            if (checkIfExistsFirst.isEmpty && checkIfExistsSecond.isEmpty){
+                val newFriendRecord = hashMapOf(
+                    "uidFirst" to auth.currentUser?.uid,
+                    "uidSecond" to uidSecond,
+                    "accepted" to 0
+                )
+                db.collection("friends").add(newFriendRecord).await()
+            } else {
+                println("Запись уже существует")
             }
+        } catch (e: Exception){
+            if (e is CancellationException) throw e
+            e.printStackTrace()
         }
+    }
+
+    suspend fun getAllUsers() : List<UserState>? {
+        return try {
+            val res = mutableListOf<Map<String, Any>>()
+            val users = db.collection("users")
+                .whereNotEqualTo("uid", auth.currentUser!!.uid)
+                .get()
+                .await()
+            for (user in users){
+                res.add(user.data)
+            }
+            val usersResult = res.map { user ->
+                UserState(
+                    username = user["username"] as String,
+                    photoUrl = user["photoUrl"] as String,
+                    uid = user["uid"] as String
+                )
+            }
+            usersResult
+        } catch (e: Exception){
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+            null
+        }
+    }
+
+    suspend fun getUser(uid: String) : Map<String, Any>? {
+        return try {
+            val user = db.collection("users")
+                .document(uid)
+                .get()
+                .await()
+            user.data ?: emptyMap()
+        } catch (e: Exception){
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+            null
+        }
+
+    }
+
+    suspend fun getSelfUser() : Map<String, Any>? {
+        return try {
+            auth.currentUser?.let {
+                val user = db.collection("users")
+                    .document(it.uid)
+                    .get()
+                    .await()
+                user.data ?: emptyMap()
+            } ?: emptyMap()
+        } catch (e: Exception){
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+            null
+        }
+
+    }
+
+    suspend fun getFriends(): List<UserState>? {
+        return try {
+            val res = mutableListOf<Map<String, Any>>()
+            val queryFirst = db.collection("friends")
+                .whereEqualTo("uidFirst", auth.currentUser?.uid)
+                .whereEqualTo("accepted", 1)
+                .get()
+                .await()
+
+            queryFirst.forEach { document ->
+                res.add(getUser(document.data["uidSecond"] as String)!!)
+            }
+
+            val querySecond = db.collection("friends")
+                .whereEqualTo("uidSecond", auth.currentUser?.uid)
+                .whereEqualTo("accepted", 1)
+                .get()
+                .await()
+
+            querySecond.forEach { document ->
+                res.add(getUser(document.data["uidFirst"] as String)!!)
+            }
+            val users = res.map { user ->
+                UserState(
+                    username = user["username"] as String,
+                    photoUrl = user["photoUrl"] as String,
+                    uid = user["uid"] as String
+                )
+            }
+            users
+        } catch (e: Exception){
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+            null
+        }
+    }
+
+    suspend fun getFriendInvites(): List<UserState>? {
+        return try {
+            val res = mutableListOf<Map<String, Any>>()
+            val friendInvites =  db.collection("friends")
+                .whereEqualTo("uidSecond", auth.currentUser?.uid)
+                .whereEqualTo("accepted", 0)
+                .get()
+                .await()
+            for (friend in friendInvites){
+                res.add(getUser(friend.data["uidFirst"] as String)!!)
+            }
+            val users = res.map { user ->
+                UserState(
+                    username = user["username"] as String,
+                    photoUrl = user["photoUrl"] as String,
+                    uid = user["uid"] as String
+                )
+            }
+            users
+        } catch (e: Exception){
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+            null
+        }
+    }
+
+    suspend fun acceptInvite(uid: String){
+
+        val friendInvite = db.collection("friends")
+            .whereEqualTo("uidFirst", uid)
+            .whereEqualTo("uidSecond", auth.currentUser?.uid)
+            .get()
+            .await()
+        for (document in friendInvite){
+            db.collection("friends").document(document.id)
+                .update("accepted", 1)
+        }
+
+    }
+
+    suspend fun declineInvite(uid: String){
+        val friendInvite = db.collection("friends")
+            .whereEqualTo("uidFirst", uid)
+            .whereEqualTo("uidSecond", auth.currentUser?.uid)
+            .get()
+            .await()
+        for (document in friendInvite){
+            db.collection("friends").document(document.id)
+                .delete().await()
+        }
+    }
+
+    suspend fun sendRecommendation( uidTo: String, id: String){
+        val newRecommendation = mapOf(
+            "uidFrom" to auth.currentUser?.uid,
+            "uidTo" to uidTo,
+            "id" to id
+        )
+        db.collection("recommendations")
+            .add(newRecommendation)
+            .await()
+    }
+
+    suspend fun getFilmsIdsAndUsers(): List<Pair<String, String>> {
+        val documents = db.collection("recommendations").whereEqualTo("uidTo", auth.currentUser?.uid).get().await()
+        val idsAndUsers = mutableListOf<Pair<String, String>>()
+        documents.forEach {
+            idsAndUsers.add(Pair(it.data["id"] as String, it.data["uidFrom"] as String))
+        }
+        return idsAndUsers
     }
 
 }
@@ -208,4 +262,5 @@ data class UserData(
     val username: String,
     val photoUrl: String?
 )
+
 

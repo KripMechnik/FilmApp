@@ -13,7 +13,7 @@
         android:layout_width="match_parent">
 
         <com.google.android.material.imageview.ShapeableImageView
-                android:layout_height="160dp"
+                android:layout_height="170dp"
                 android:layout_width="112dp"
                 android:layout_gravity="center"
                 app:shapeAppearanceOverlay="@style/RoundedImageView"

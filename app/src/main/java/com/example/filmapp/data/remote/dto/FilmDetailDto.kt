@@ -58,6 +58,8 @@ fun FilmDetailDto.toFilmDetail() : FilmDetail{
         rating = ratingKinopoisk,
         year = year,
         shortDescription = shortDescription,
-        genres = genres.map {it.genre}
+        genres = genres.map {it.genre},
+        id = kinopoiskId
+
     )
 }

@@ -7,5 +7,6 @@ data class FilmDetail(
     val rating: Double,
     val year: Int,
     val shortDescription: String?,
-    val genres: List<String>
+    val genres: List<String>,
+    val id: Int
 )

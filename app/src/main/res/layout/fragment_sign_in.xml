@@ -3,17 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/registration_layout"
     android:layout_gravity="center">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
+
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/registration"
+            android:text="@string/enter"
             android:textStyle="bold"
             android:layout_gravity="center"
             android:textSize="36sp"
@@ -48,6 +48,8 @@
                 android:padding="12dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,40 +58,32 @@
             android:layout_marginTop="30dp"
             app:hintEnabled="true"
             app:hintAnimationEnabled="true"
-            app:helperText="ExampleLogin"
-            android:hint="@string/login">
+            app:passwordToggleEnabled="true"
+
+            android:hint="@string/password">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/login"
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/login_icon"
+                android:drawableStart="@drawable/password_icon"
                 android:drawablePadding="12dp"
                 android:padding="12dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+        <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            app:backgroundTint="#35FFEA"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginTop="30dp"
-            app:boxStrokeWidth="2dp"
-            app:startIconDrawable="@drawable/password_icon"
-            app:startIconCheckable="true"
-            app:passwordToggleEnabled="true">
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/password"
-                android:inputType="textPassword"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
+            android:textSize="20sp"
+            android:text="@string/to_enter"
+            android:fontFamily="sans-serif-smallcaps"
+            android:id="@+id/sign_in_button"
+            />
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
@@ -103,11 +97,9 @@
             android:text="@string/to_register"
             android:textColor="@color/green"
             android:fontFamily="sans-serif-smallcaps"
-            android:id="@+id/to_register"
+            android:id="@+id/to_register_button"
             />
 
     </LinearLayout>
-
-
 
 </FrameLayout>
