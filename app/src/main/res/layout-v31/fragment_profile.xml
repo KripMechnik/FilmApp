@@ -44,7 +44,7 @@
                     android:layout_height="50dp"
                     android:layout_width="50dp"
                     android:layout_gravity="center"
-                    android:src="@android:color/holo_blue_bright"
+                    android:src="@drawable/logout_icon"
                     app:shapeAppearanceOverlay="@style/RoundedImageView"
                     android:id="@+id/logout"
                     android:elevation="20dp"

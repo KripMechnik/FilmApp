@@ -13,16 +13,19 @@ import com.example.filmapp.ui.common.UserState
 
 class RecommendationsAdapter(
     private val filmsAndUsers: List<Pair<FilmDetail, UserState>>,
-    private val onClick: () -> Unit
+    private val onClick: (id: String) -> Unit
 ) : RecyclerView.Adapter<RecommendationsAdapter.RecommendationsViewHolder>() {
 
     inner class RecommendationsViewHolder(private val binding: RecommendationsItemBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind (url: String, login: String, title: String, year: Int){
+        fun bind (url: String, login: String, title: String, year: Int, id: String){
             binding.apply {
                 tvYear.text = year.toString()
                 tvTitle.text = title
                 tvFrom.text = login
                 Glide.with(binding.ivPreview).load(url).error(Color.Gray).apply(RequestOptions().centerCrop()).into(binding.ivPreview)
+            }
+            binding.root.setOnClickListener {
+                onClick(id)
             }
         }
     }
@@ -38,7 +41,7 @@ class RecommendationsAdapter(
     }
 
     override fun onBindViewHolder(holder: RecommendationsViewHolder, position: Int) {
-        holder.bind(filmsAndUsers[position].first.posterUrl, filmsAndUsers[position].second.username, filmsAndUsers[position].first.title, filmsAndUsers[position].first.year)
+        holder.bind(filmsAndUsers[position].first.posterUrl, filmsAndUsers[position].second.username, filmsAndUsers[position].first.title, filmsAndUsers[position].first.year, filmsAndUsers[position].first.id.toString())
     }
 
     override fun getItemCount(): Int = filmsAndUsers.size

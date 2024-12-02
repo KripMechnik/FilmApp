@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.filmapp.R
 import com.example.filmapp.databinding.FragmentRecommendationsBinding
 import com.example.filmapp.databinding.RecommendationsItemBinding
+import com.example.filmapp.ui.detailed.DetailFragment
+import com.example.filmapp.ui.detailed.DetailViewModel
 import com.example.filmapp.ui.recommendations.adapter.RecommendationsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +19,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class RecommendationsFragment : Fragment() {
     private lateinit var binding: FragmentRecommendationsBinding
     private lateinit var viewModel: RecommendationsViewModel
+    private lateinit var detailViewModel: DetailViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,6 +28,7 @@ class RecommendationsFragment : Fragment() {
     ): View {
         binding = FragmentRecommendationsBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this)[RecommendationsViewModel::class.java]
+        detailViewModel = ViewModelProvider(requireActivity())[DetailViewModel::class.java]
         return binding.root
     }
 
@@ -37,7 +42,15 @@ class RecommendationsFragment : Fragment() {
         }
 
         viewModel.state.observe(viewLifecycleOwner){
-            val adapter = RecommendationsAdapter(it){}
+            val adapter = RecommendationsAdapter(it){id ->
+                detailViewModel.id.value = id
+                detailViewModel.getFilm()
+                val fragmentTransaction = parentFragmentManager.beginTransaction()
+                fragmentTransaction.setReorderingAllowed(true).setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                fragmentTransaction.replace(R.id.container, DetailFragment())
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
+            }
             binding.recommendationsRecycler.adapter = adapter
             adapter.notifyDataSetChanged()
         }

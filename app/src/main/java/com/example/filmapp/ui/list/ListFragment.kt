@@ -2,6 +2,9 @@ package com.example.filmapp.ui.list
 
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +13,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -21,6 +25,9 @@ import com.example.filmapp.ui.profile.ProfileFragment
 import com.example.filmapp.ui.sign_in.SignInFragment
 import com.google.android.material.imageview.ShapeableImageView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class ListFragment : Fragment() {
@@ -57,14 +64,13 @@ class ListFragment : Fragment() {
 
         profileButton = binding.profileButton
 
-        viewModel.photoUrl.observe(viewLifecycleOwner){
-            if (it.isNotBlank()){
-                Glide.with(profileButton).load(it).error(R.drawable.user_icon).apply(RequestOptions().centerCrop()).into(profileButton)
+        lifecycleScope.launch(Dispatchers.IO) {
+            loadUriFromFile(requireContext())?.let {
+                withContext(Dispatchers.Main) {
+                    profileButton.setImageBitmap(it)
+                }
             }
         }
-
-
-
 
         profileButton.setOnClickListener {
             if (viewModel.checkAuth()){
@@ -94,5 +100,21 @@ class ListFragment : Fragment() {
             adapter.notifyDataSetChanged()
 
         }
+    }
+
+    private fun loadUriFromFile(context: Context): Bitmap? {
+        val filename = "my_bitmap_image.png"
+
+        return try {
+            val fileInputStream = context.openFileInput(filename)
+            BitmapFactory.decodeStream(fileInputStream).also {
+                fileInputStream.close()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+
+
     }
 }

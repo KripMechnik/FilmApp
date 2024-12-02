@@ -89,7 +89,6 @@ class ProfileFragment : Fragment() {
 
         photo.setOnClickListener{
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-
         }
         lifecycleScope.launch(Dispatchers.IO) {
             loadUriFromFile(requireContext())?.let {
@@ -148,7 +147,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun saveUriToFile(bitmap: Bitmap, context: Context) {
+    private fun saveUriToFile(bitmap: Bitmap, context: Context) {
         val filename = "my_bitmap_image.png"
         val fileOutputStream: FileOutputStream
         try {
@@ -161,7 +160,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun loadUriFromFile(context: Context): Bitmap? {
+    private fun loadUriFromFile(context: Context): Bitmap? {
         val filename = "my_bitmap_image.png"
 
         return try {

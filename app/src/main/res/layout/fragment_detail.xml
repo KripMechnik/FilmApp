@@ -120,11 +120,11 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-
+            android:src="@drawable/share_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:maxImageSize="40dp"
-            android:backgroundTint="@android:color/holo_blue_bright"
+            android:backgroundTint="@android:color/holo_blue_dark"
             app:borderWidth="0dp"
             app:layout_anchor="@id/app_bar_layout"
             android:layout_marginEnd="30dp"

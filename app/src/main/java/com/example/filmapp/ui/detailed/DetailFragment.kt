@@ -1,11 +1,14 @@
 package com.example.filmapp.ui.detailed
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.Fragment
@@ -18,6 +21,8 @@ import com.example.filmapp.R
 import com.example.filmapp.databinding.FragmentDetailBinding
 import com.example.filmapp.ui.detailed.bottom_sheet_dialog.FriendsSheetDialog
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -60,11 +65,22 @@ class DetailFragment : Fragment() {
         }
 
         binding.sendButton.setOnClickListener {
-            val fragment = FriendsSheetDialog()
-            val bundle = Bundle()
-            bundle.putString("id", viewModel.id.value)
-            fragment.arguments = bundle
-            fragment.show(parentFragmentManager, null)
+            if (Firebase.auth.currentUser != null){
+                val fragment = FriendsSheetDialog()
+                val bundle = Bundle()
+                bundle.putString("id", viewModel.id.value)
+                fragment.arguments = bundle
+                fragment.show(parentFragmentManager, null)
+            } else {
+                Toast.makeText(requireContext(), "Необходимо зайти в аккаунт!", Toast.LENGTH_LONG).show()
+            }
+
+        }
+
+        binding.watchButton.setOnClickListener {
+            val url = viewModel.state.value!!.film!!.url
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
 
     }

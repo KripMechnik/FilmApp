@@ -37,4 +37,6 @@ object AppModule {
     fun provideGoogleFirebaseObj(): GoogleFirebase{
         return GoogleFirebase()
     }
+
+
 }
